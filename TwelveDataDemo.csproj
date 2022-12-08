@@ -12,6 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,10 +21,13 @@
     <None Remove="Data\" />
     <None Remove="Data\Models\" />
     <None Remove="Models\RealTimePrice\" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Views\TwelveData\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\Models\" />
     <Folder Include="Models\RealTimePrice\" />
+    <Folder Include="Views\TwelveData\" />
   </ItemGroup>
 </Project>

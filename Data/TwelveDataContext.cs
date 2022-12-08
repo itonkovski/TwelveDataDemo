@@ -12,6 +12,6 @@ namespace TwelveDataDemo.Data
 
         }
 
-        public DbSet<TwelveDataPrice> TwelveDataPrice { get; set; }
+        public DbSet<TwelveDataPrice> TwelveDataPrices { get; set; }
     }
 }

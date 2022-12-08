@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TwelveDataDemo.Data;
+using System.Net.Http;
 
 namespace TwelveDataDemo
 {
@@ -26,6 +27,9 @@ namespace TwelveDataDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            //services.AddControllers();
+
+            services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddDbContext<TwelveDataContext>(opt => opt
                 .UseInMemoryDatabase("TwelveData"));
@@ -50,6 +54,7 @@ namespace TwelveDataDemo
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -58,10 +63,10 @@ namespace TwelveDataDemo
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapDefaultControllerRoute();
             });
         }
     }

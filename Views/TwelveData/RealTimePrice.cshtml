@@ -1,0 +1,19 @@
+﻿@model TwelveDataPriceViewModel 
+@{
+    ViewData["Title"] = "Real Time Price";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Real Time Price</h1>
+    @*<form asp-action="RealTimePrice">
+        <div class="form-group">
+            <label asp-for="Symbol"></label>
+            <input asp-for="Symbol" class="form-control">
+            <span asp-validation-for="Symbol" class="small text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block text-uppercase">Save</button>
+    </form>*@
+    <div class="alert alert-primary shadow p-3" role="alert">        
+        @Model.Symbol - @Model.Price
+    </div>
+</div>
