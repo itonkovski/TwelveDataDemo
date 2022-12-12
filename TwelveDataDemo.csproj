@@ -23,11 +23,17 @@
     <None Remove="Models\RealTimePrice\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Views\TwelveData\" />
+    <None Remove="Data\Models\Enums\" />
+    <None Remove="Services\" />
+    <None Remove="Services\RealTimePrice\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\Models\" />
     <Folder Include="Models\RealTimePrice\" />
     <Folder Include="Views\TwelveData\" />
+    <Folder Include="Data\Models\Enums\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\RealTimePrice\" />
   </ItemGroup>
 </Project>

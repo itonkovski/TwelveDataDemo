@@ -3,17 +3,19 @@
     ViewData["Title"] = "Real Time Price";
 }
 
-<div class="text-center">
+<div class="text-center col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
     <h1 class="display-4">Real Time Price</h1>
-    @*<form asp-action="RealTimePrice">
-        <div class="form-group">
-            <label asp-for="Symbol"></label>
-            <input asp-for="Symbol" class="form-control">
-            <span asp-validation-for="Symbol" class="small text-danger"></span>
+    <form method="post" enctype="multipart/form-data">
+        <div class="card shadow p-3">
+            <div class="card-body">
+                <h5 class="card-title">Submit currency</h5>
+                <input asp-for="Symbol" class="form-control form-control-lg w-50 mx-auto" type="text" placeholder="Currency">
+                <br />
+                <button type="submit" class="btn btn-primary text-uppercase">Check price</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block text-uppercase">Save</button>
-    </form>*@
-    <div class="alert alert-primary shadow p-3" role="alert">        
-        @Model.Symbol - @Model.Price
-    </div>
+    </form>
+        @*<div class="alert alert-primary shadow p-3" role="alert">
+                @Model.Symbol - @Model.Price
+            </div>*@
 </div>

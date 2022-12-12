@@ -8,6 +8,8 @@ using TwelveDataDemo.Models.RealTimePrice;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TwelveDataDemo.Controllers
 {
@@ -26,15 +28,51 @@ namespace TwelveDataDemo.Controllers
             this.configuration = configuration;
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
+        public IActionResult RealTimePrice()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RealTimePrice(string symbol)
         {
-            var newPrice = await PostRealTimePrice("EUR/USD");
-            return View(newPrice);
+            var newPrice = await PostRealTimePrice(symbol);
+            //return View(newPrice);
+            return RedirectToAction(nameof(AllPrices));
         }
-               
-        public async Task<TwelveDataPriceViewModel> PostRealTimePrice(string symbol)
+
+        public IActionResult AllPrices()
+        {
+            var prices = GetPrice();
+            return View(prices);
+        }
+
+        //public async Task GetJsonResponse(TwelveDataPriceFormModel priceModel, string symbol)
+        //{
+        //    var request = new HttpRequestMessage(HttpMethod.Get, $"price?symbol={symbol}&apikey={this.configuration["TwelveData:ApiKey"]}&format=JSON");
+        //    var client = this.clientFactory.CreateClient("twelveData");
+        //    var response = await client.SendAsync(request);
+        //    response.EnsureSuccessStatusCode();
+        //    var body = await response.Content.ReadAsStringAsync();
+        //    var jsonResponse = JsonConvert.DeserializeObject<TwelveDataPrice>(body);
+        //    await AddPriceAsync(priceModel);
+        //}
+
+        //public async Task AddPriceAsync(TwelveDataPriceFormModel priceModel)
+        //{
+        //    var newPrice = new TwelveDataPrice
+        //    {
+        //        Id = priceModel.Id,
+        //        Symbol = priceModel.Symbol,
+        //        Price = priceModel.Price
+        //    };
+        //    await this.dbContext.TwelveDataPrices.AddAsync(newPrice);
+        //    await this.dbContext.SaveChangesAsync();
+
+        //}
+
+        private async Task<TwelveDataPrice> PostRealTimePrice(string symbol)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"price?symbol={symbol}&apikey={this.configuration["TwelveData:ApiKey"]}&format=JSON");
             var client = this.clientFactory.CreateClient("twelveData");
@@ -42,35 +80,33 @@ namespace TwelveDataDemo.Controllers
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
-                var jsonResponse = JsonConvert.DeserializeObject<TwelveDataPrice>(body);
-                TwelveDataPriceViewModel result = new TwelveDataPriceViewModel
+                var jsonResponse = JsonConvert.DeserializeObject<TwelveDataPriceFormModel>(body);
+                var result = new TwelveDataPrice
                 {
                     Id = GenerateGuid(),
                     Symbol = symbol,
                     Price = jsonResponse.Price
                 };
-                //this.dbContext.TwelveDataPrices.Add(result);
-                //await this.dbContext.SaveChangesAsync();
+                this.dbContext.TwelveDataPrices.Add(result);
+                await this.dbContext.SaveChangesAsync();
 
                 return result;
-                //return CreatedAtAction("GetRealTimePrice", new { id = result.Id }, result);
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<TwelveDataPrice>> GetRealTimePrice(string id)
-        //{
-        //    var result = await dbContext
-        //        .TwelveDataPrices
-        //        .FindAsync(id);
-
-        //    //if (result == null)
-        //    //{
-        //    //    return NotFound();
-        //    //}
-
-        //    return result;
-        //}
+        private IEnumerable<TwelveDataPriceViewModel> GetPrice()
+        {
+            var price = this.dbContext
+                .TwelveDataPrices
+                .Select(x => new TwelveDataPriceViewModel
+                {
+                    Id = x.Id,
+                    Symbol = x.Symbol,
+                    Price = x.Price
+                })
+                .ToList();
+            return price;
+        }
 
         //public async Task<TwelveDataPrice> GetRealTimePriceAsync()
         //{
