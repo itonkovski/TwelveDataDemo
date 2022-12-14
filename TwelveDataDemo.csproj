@@ -36,4 +36,9 @@
     <Folder Include="Services\" />
     <Folder Include="Services\RealTimePrice\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\css\site.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿@model TwelveDataPriceViewModel 
+﻿@model TwelveDataPriceViewModel
 @{
     ViewData["Title"] = "Real Time Price";
 }
@@ -10,12 +10,14 @@
             <div class="card-body">
                 <h5 class="card-title">Submit currency</h5>
                 <input asp-for="Symbol" class="form-control form-control-lg w-50 mx-auto" type="text" placeholder="Currency">
+                <span asp-validation-for="Symbol" class="text-danger"></span>
                 <br />
                 <button type="submit" class="btn btn-primary text-uppercase">Check price</button>
             </div>
         </div>
     </form>
-        @*<div class="alert alert-primary shadow p-3" role="alert">
-                @Model.Symbol - @Model.Price
-            </div>*@
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

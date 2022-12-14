@@ -35,8 +35,12 @@ namespace TwelveDataDemo.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RealTimePrice(string symbol)
+        public async Task<IActionResult> RealTimePrice(TwelveDataPriceViewModel model, string symbol)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             var newPrice = await PostRealTimePrice(symbol);
             //return View(newPrice);
             return RedirectToAction(nameof(AllPrices));
@@ -48,35 +52,11 @@ namespace TwelveDataDemo.Controllers
             return View(prices);
         }
 
-        //public async Task GetJsonResponse(TwelveDataPriceFormModel priceModel, string symbol)
-        //{
-        //    var request = new HttpRequestMessage(HttpMethod.Get, $"price?symbol={symbol}&apikey={this.configuration["TwelveData:ApiKey"]}&format=JSON");
-        //    var client = this.clientFactory.CreateClient("twelveData");
-        //    var response = await client.SendAsync(request);
-        //    response.EnsureSuccessStatusCode();
-        //    var body = await response.Content.ReadAsStringAsync();
-        //    var jsonResponse = JsonConvert.DeserializeObject<TwelveDataPrice>(body);
-        //    await AddPriceAsync(priceModel);
-        //}
-
-        //public async Task AddPriceAsync(TwelveDataPriceFormModel priceModel)
-        //{
-        //    var newPrice = new TwelveDataPrice
-        //    {
-        //        Id = priceModel.Id,
-        //        Symbol = priceModel.Symbol,
-        //        Price = priceModel.Price
-        //    };
-        //    await this.dbContext.TwelveDataPrices.AddAsync(newPrice);
-        //    await this.dbContext.SaveChangesAsync();
-
-        //}
-
         private async Task<TwelveDataPrice> PostRealTimePrice(string symbol)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"price?symbol={symbol}&apikey={this.configuration["TwelveData:ApiKey"]}&format=JSON");
             var client = this.clientFactory.CreateClient("twelveData");
-            using (var response = await client.SendAsync(request))
+            using(var response = await client.SendAsync(request))
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
@@ -87,6 +67,10 @@ namespace TwelveDataDemo.Controllers
                     Symbol = symbol,
                     Price = jsonResponse.Price
                 };
+                if (string.IsNullOrEmpty(result.Price))
+                {
+                    throw new Exception("Not existing currency. Try again.");
+                }
                 this.dbContext.TwelveDataPrices.Add(result);
                 await this.dbContext.SaveChangesAsync();
 
@@ -107,27 +91,6 @@ namespace TwelveDataDemo.Controllers
                 .ToList();
             return price;
         }
-
-        //public async Task<TwelveDataPrice> GetRealTimePriceAsync()
-        //{
-        //    var request = new HttpRequestMessage(HttpMethod.Get, $"price?symbol=AAPL&apikey={this.configuration["TwelveData:ApiKey"]}&format=JSON");
-        //    var client = this.clientFactory.CreateClient("twelveData");
-        //    using (var response = await client.SendAsync(request))
-        //    {
-        //        response.EnsureSuccessStatusCode();
-        //        var body = await response.Content.ReadAsStringAsync();
-        //        var jsonResponse = JsonConvert.DeserializeObject<TwelveDataPriceResult>(body);
-        //        TwelveDataPrice result = new TwelveDataPrice
-        //        {
-        //            Id = GenerateGuid(),
-        //            Price = jsonResponse.Price
-        //        };
-        //        this.dbContext.TwelveDataPrices.Add(result);
-        //        await this.dbContext.SaveChangesAsync();
-        //        return result;
-
-        //    }
-        //}
 
         private string GenerateGuid()
         {
